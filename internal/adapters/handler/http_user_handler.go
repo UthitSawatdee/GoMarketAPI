@@ -31,35 +31,35 @@ func (h *HttpUserHandler) Register(c *fiber.Ctx) error {
 	request := new(RegisterRequest)
 	if err := c.BodyParser(request); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-            "success": false,
-            "error":   "Invalid request body",
-        })
+			"success": false,
+			"error":   "Invalid request body",
+		})
 	}
 
 	// Validate request
 	if request.Email == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-            "success": false,
-            "error":   "Invalid request body",
-        })
+			"success": false,
+			"error":   "Invalid request body",
+		})
 	}
 	if request.Password == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-            "success": false,
-            "error":   "Email is required",
-        })
+			"success": false,
+			"error":   "Email is required",
+		})
 	}
 	if request.Username == "" {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-            "success": false,
-            "error":   "Email is required",
-        })
+			"success": false,
+			"error":   "Email is required",
+		})
 	}
 	if len(request.Password) < 6 {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
-            "success": false,
-            "error":   "Password must be at least 6 characters",
-        })
+			"success": false,
+			"error":   "Password must be at least 6 characters",
+		})
 	}
 
 	user := &domain.User{
@@ -69,17 +69,19 @@ func (h *HttpUserHandler) Register(c *fiber.Ctx) error {
 	}
 
 	if err := h.userUseCase.CreateUser(user); err != nil {
-		if err.Error() == "email already registered" {
-		}
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"message": "Failed to register user",
+			"error":   err.Error(),
+		})
 	}
 
 	return c.Status(fiber.StatusCreated).JSON(fiber.Map{
-        "success": true,
-        "message": "User registered successfully",
-        "data": fiber.Map{
-            "email":    user.Email,
-            "username": user.Username,
-        },
-    })
+		"success": true,
+		"message": "User registered successfully",
+		"data": fiber.Map{
+			"email":    user.Email,
+			"username": user.Username,
+		},
+	})
 }
-

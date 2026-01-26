@@ -1,4 +1,4 @@
-package api
+package main
 
 import (
 	"github.com/Fal2o/E-Commerce_API/infastructure/config"

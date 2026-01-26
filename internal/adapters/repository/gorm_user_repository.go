@@ -1,8 +1,9 @@
 package repository
 
 import (
-	port "github.com/Fal2o/E-Commerce_API/internal/port"
+	"errors"
 	domain "github.com/Fal2o/E-Commerce_API/internal/domain"
+	port "github.com/Fal2o/E-Commerce_API/internal/port"
 	"gorm.io/gorm"
 )
 
@@ -23,7 +24,12 @@ func (r *GormUserRepository) Create(user *domain.User) error {
 
 func (r *GormUserRepository) GetByEmail(email string) (*domain.User, error) {
 	user := new(domain.User) // → user เป็น (pointer)
-	err := r.db.Where("email =?",email).First(user).Error
+	err := r.db.Where("email =?", email).First(user).Error
+
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return nil, nil
+	}
+
 	if err != nil {
 		return nil, err
 	}
