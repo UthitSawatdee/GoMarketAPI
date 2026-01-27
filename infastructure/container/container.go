@@ -12,34 +12,34 @@ import (
 type Container struct {
     // Handlers
     UserHandler       *handlers.HttpUserHandler
-    // ProductHandler    *adapters.HttpProductHandler
-    // CategoriesHandler *adapters.HttpCategoriesHandler
-    // CartHandler       *adapters.HttpCartHandler
-    // OrderHandler      *adapters.HttpOrderHandler
-    // HealthHandler     *adapters.HealthHandler
+    ProductHandler    *handlers.HttpProductHandler
+    CategoriesHandler *handlers.HttpCategoryHandler
+    // CartHandler       *handlers.HttpCartHandler
+    // OrderHandler      *handlers.HttpOrderHandler
+    // HealthHandler     *handlers.HealthHandler
 }
 
 func NewContainer(db *gorm.DB) *Container {
     // Repositories
     userRepo := adapters.NewGormUserRepository(db)
-    // productRepo := adapters.NewGormProductRepository(db)
-    // categoriesRepo := adapters.NewGormCategoriesRepository(db)
+    productRepo := adapters.NewGormProductRepository(db)
+    categoriesRepo := adapters.NewGormCategoryRepository(db)
     // cartRepo := adapters.NewGormCartRepository(db)
     // orderRepo := adapters.NewGormOrderRepository(db)
 
     // Services
     passwordService := hash.NewPasswordService()
     userService := usecases.NewUserService(userRepo, passwordService)
-    // productService := usecases.NewProductService(productRepo)
-    // categoriesService := usecases.NewCategoriesService(categoriesRepo)
+    productService := usecases.NewProductService(productRepo)
+    categoriesService := usecases.NewCategoryService(categoriesRepo)
     // cartService := usecases.NewCartService(cartRepo)
     // orderService := usecases.NewOrderService(orderRepo, cartRepo, productRepo)
 
     // Handlers
     return &Container{
         UserHandler:       handlers.NewHttpUserHandler(userService),
-        // ProductHandler:    adapters.NewHttpProductHandler(productService),
-        // CategoriesHandler: adapters.NewHttpCategoriesHandler(categoriesService),
+        ProductHandler:    handlers.NewHttpProductHandler(productService),
+        CategoriesHandler: handlers.NewHttpCategoryHandler(categoriesService),
         // CartHandler:       adapters.NewHttpCartHandler(cartService),
         // OrderHandler:      adapters.NewHttpOrderHandler(orderService),
         // HealthHandler:     adapters.NewHealthHandler(db),

@@ -19,6 +19,7 @@ type RegisterRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 	Username string `json:"username"`
+	Role     string `json:"role"`
 }
 
 // LoginRequest represents login request
@@ -66,6 +67,7 @@ func (h *HttpUserHandler) Register(c *fiber.Ctx) error {
 		Email:    request.Email,
 		Password: request.Password,
 		Username: request.Username,
+		Role:     request.Role,
 	}
 
 	if err := h.userUseCase.CreateUser(user); err != nil {
