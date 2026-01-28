@@ -2,6 +2,8 @@ package repository
 
 import (
 	"errors"
+	"fmt"
+
 	domain "github.com/Fal2o/E-Commerce_API/internal/domain"
 	port "github.com/Fal2o/E-Commerce_API/internal/port"
 	"gorm.io/gorm"
@@ -59,5 +61,41 @@ func (r *GormProductRepository) GetByName(name string) (*domain.Product, error) 
 	if err != nil {
 		return nil, err
 	}
+	return product, nil
+}
+
+func (r *GormProductRepository) GetAllProducts() ([]*domain.Product, error) {
+	var products []*domain.Product
+	err := r.db.Find(&products).Error
+	if err != nil {
+		return nil, err
+	}
+	return products, nil
+}
+
+func (r *GormProductRepository) GetProductByCategory(category string) ([]*domain.Product, error) {
+	var products []*domain.Product
+	err := r.db.Preload("Category").Where("category_id = ? ", category).Find(&products)
+	if err.Error != nil {
+		return nil, err.Error
+	}
+	if err.RowsAffected == 0 {
+		return nil, fmt.Errorf("Product not found")
+	}
+
+	return products, nil
+}
+
+func (r *GormProductRepository) GetProductByName(name string) ([]*domain.Product, error) {
+	var product []*domain.Product
+	err := r.db.Preload("Category").Where("LOWER(name) LIKE LOWER(?)", "%"+name+"%").Find(&product)
+	if err.Error != nil {
+		return nil, err.Error
+	}
+
+	if err.RowsAffected == 0 {
+		return nil, gorm.ErrRecordNotFound
+	}
+
 	return product, nil
 }

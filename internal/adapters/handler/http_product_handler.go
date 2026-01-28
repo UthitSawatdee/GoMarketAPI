@@ -53,7 +53,7 @@ func (h *HttpProductHandler) CreateProduct(c *fiber.Ctx) error {
 }
 
 func (h *HttpProductHandler) UpdateProduct(c *fiber.Ctx) error {
-	id := c.Params("id")                           // 1. ดึงพารามิเตอร์จาก URL
+	id := c.Params("id") // 1. ดึงพารามิเตอร์จาก URL
 	request := new(domain.Product)
 	if err := c.BodyParser(request); err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
@@ -61,7 +61,7 @@ func (h *HttpProductHandler) UpdateProduct(c *fiber.Ctx) error {
 			"error":   "Invalid request body",
 		})
 	}
-	err := h.ProductUseCase.UpdateProduct(id,request)
+	err := h.ProductUseCase.UpdateProduct(id, request)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
@@ -96,5 +96,61 @@ func (h *HttpProductHandler) DeleteProduct(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"success": true,
 		"message": "Product deleted successfully",
+	})
+}
+
+func (h *HttpProductHandler) GetAllProducts(c *fiber.Ctx) error {
+	data, err := h.ProductUseCase.GetAllProducts()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"error":   "Failed to retrieve products",
+		})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true,
+		"data":    data,
+	})
+}
+
+func (h *HttpProductHandler) GetProductByCategory(c *fiber.Ctx) error {
+	category := c.Params("category")
+	data, err := h.ProductUseCase.GetProductByCategory(category)
+	if err != nil {
+		if err.Error() == "Product not found" {
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+				"success": false,
+				"error":   "Product not found",
+			})
+		}
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"error":   "Failed to retrieve products by category",
+		})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true,
+		"data":    data,
+	})
+}
+
+func (h *HttpProductHandler) GetProductByName(c *fiber.Ctx) error {
+	name := c.Params("name")
+	data, err := h.ProductUseCase.GetProductByName(name)
+	if err != nil {
+		if err.Error() == "Product not found" {
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+				"success": false,
+				"error":   "Product not found",
+			})
+		}
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"error":   "Failed to retrieve product by name",
+		})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true,
+		"data":    data,
 	})
 }
