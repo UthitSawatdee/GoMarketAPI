@@ -27,12 +27,17 @@ This project follows **Clean Architecture** (Hexagonal Architecture) principles:
 │        Repository (GORM)                │  ← Data Layer
 └─────────────────────────────────────────┘
 ```
+# รัน seed data
+go run cmd/api/main.go -seed
 
 ### Public Endpoints
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | POST | `/api/v1/register` | User registration |
 | POST | `/api/v1/login` | User login |
+| GET | `/api/v1/products` | List all products |
+| GET | `/api/v1/products/:name` | Search products |
+| GET | `/api/v1/products/category/:category` | Filter by category |
 
 ### Admin Endpoints (Admin Auth Required)
 | Method | Endpoint | Description |

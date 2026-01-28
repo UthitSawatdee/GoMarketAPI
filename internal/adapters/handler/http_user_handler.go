@@ -4,6 +4,8 @@ import (
 	domain "github.com/Fal2o/E-Commerce_API/internal/domain"
 	usecases "github.com/Fal2o/E-Commerce_API/internal/usecases"
 	"github.com/gofiber/fiber/v2"
+	"fmt"
+
 )
 
 type HttpUserHandler struct {
@@ -132,5 +134,108 @@ func (h *HttpUserHandler) Login(c *fiber.Ctx) error {
 		"data": fiber.Map{
 			"token": token,
 		},
+	})
+}
+
+func (h *HttpUserHandler) GetProfile(c *fiber.Ctx) error {
+	userID := c.Locals("user_id")
+	// fmt.Println("Retrieved userID from context:", userID)
+	if userID == nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"success": false,
+			"message": "userID not found",
+		})
+	}
+	userIDUint, ok := userID.(uint)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"success": false,
+			"message": "invalid userID",
+		})
+	}
+	user, err := h.userUseCase.GetUserByID(userIDUint)
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"message": "Failed to retrieve user profile",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true,
+		"message": "User profile retrieved successfully",
+		"data": fiber.Map{
+			"id":       user.ID,
+			"email":    user.Email,
+			"username": user.Username,
+			"role":     user.Role,
+		},
+	})
+}
+
+// UpdateProfileRequest represents update profile request
+type UpdateProfileRequest struct {
+	Username string `json:"username"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+	NewPassword string `json:"new_password"`
+}
+
+// UpdateProfile updates the current user's profile
+// PUT /user/profile
+func (h *HttpUserHandler) UpdateProfile(c *fiber.Ctx) error {
+	userIDValue := c.Locals("user_id")
+	if userIDValue == nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"success": false,
+			"message": "userID not found",
+		})
+	}
+	userID, ok := userIDValue.(uint)
+	if !ok {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"success": false,
+			"message": "invalid userID",
+		})
+	}
+
+	request := new(UpdateProfileRequest)
+	if err := c.BodyParser(request); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"error":   "Invalid request body",
+		})
+	}
+	// Get existing user
+	user, err := h.userUseCase.GetUserByID(userID)
+	if err != nil {
+		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+			"success": false,
+			"message": "User not found",
+			"error":   err.Error(),
+		})
+	}
+	if request.Username != "" {
+		user.Username = request.Username
+	}
+	if request.Email != "" {
+		user.Email = request.Email
+	}		
+	fmt.Println("Request Password:", request.Password)
+	fmt.Println("Request NewPassword:", request.NewPassword)
+	
+	if err := h.userUseCase.UpdateUser(user,request.Password,request.NewPassword); err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"success": false,
+			"message": "Failed to update user profile",
+			"error":   err.Error(),
+		})
+	}
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true,
+		"ID":       user.ID,
+		"Email":    user.Email,
+		"Username": user.Username,
 	})
 }

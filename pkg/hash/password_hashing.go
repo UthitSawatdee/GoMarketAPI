@@ -1,6 +1,10 @@
 package hash
 
-import "golang.org/x/crypto/bcrypt"
+import (
+	"fmt"
+
+	"golang.org/x/crypto/bcrypt"
+)
 
 // Interface - กำหนดว่า service นี้ทำอะไรได้บ้าง
 type PasswordService interface {
@@ -22,5 +26,6 @@ func (s *BcryptPasswordService) Hash(password string) (string, error) {
 
 func (s *BcryptPasswordService) Verify(password, hashedPassword string) bool {
     err := bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(password))
+    fmt.Println("Password verification error:", err)
     return err == nil
 }

@@ -52,7 +52,7 @@ func AuthMiddleware(secretKey string) fiber.Handler {
         }
 
         // Set เป็น uint 
-        c.Locals("userID", uint(userIDFloat))
+        c.Locals("user_id", uint(userIDFloat))
         c.Locals("userRole", claims["role"])
         return c.Next()
     }
@@ -65,6 +65,21 @@ func AdminOnly() fiber.Handler {
 		if role != "admin" {
 			return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
 				"error": "admin access required",
+			})
+		}
+
+		return c.Next()
+	}
+}
+
+func UserOnly() fiber.Handler {
+	return func(c *fiber.Ctx) error {
+		// ดึง role จาก context (ที่ AuthMiddleware เก็บไว้)
+		role := c.Locals("userRole")
+
+		if role != "user" {
+			return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
+				"error": "user access required",
 			})
 		}
 

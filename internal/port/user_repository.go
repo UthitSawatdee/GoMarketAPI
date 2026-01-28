@@ -9,9 +9,9 @@ type UserRepository interface {
 	Create(user *domain.User) error
 	// Update(user *domain.User) error
 	// Delete(id uint) error
-	GetByEmail(email string) (*domain.User, error)
-	// GetUser(id uint) (*domain.User, error)
+	GetUserByEmail(email string) (*domain.User, error)
+	GetUserByID(id uint) (*domain.User, error)	
 	// ListUsers() ([]*domain.User, error)
 	// GetByEmail(email string) (*domain.User, error)
-	
+	Update(user *domain.User) error
 }

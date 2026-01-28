@@ -11,6 +11,7 @@ import (
 	"os/signal"
 	"syscall"
 	"time"
+	"flag"
 )
 
 func main() {
@@ -18,10 +19,21 @@ func main() {
 	cfg := config.LoadConfig()
 	log.Printf("Starting E-Commerce API in %s mode", cfg.App.Environment)
 
+	// Define flags
+	seedFlag := flag.Bool("seed", false, "Run database seeding")
+	flag.Parse()
+
 	// Init database
 	db := database.InitDB()
 	database.AutoMigrate(db)
 
+	// Run seed if flag is provided
+	if *seedFlag {
+		log.Println("Running database seed...")
+		database.SeedData(db)
+		log.Println("Seed completed!")
+		return
+	}
 	// Init dependencies
 	c := container.NewContainer(db)
 
