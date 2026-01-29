@@ -17,6 +17,8 @@ type UserUseCase interface {
 	// UpdateUser(user *domain.User) error
 	// DeleteUser(id uint) error
 	LoginUser(user *domain.User) (error, string)
+	GetUserByID(id uint) (*domain.User, error)
+	UpdateUser(user *domain.User, password, newPassword string) error
 }
 
 type UserService struct {
@@ -33,7 +35,7 @@ func NewUserService(repo port.UserRepository, hash hash.PasswordService) UserUse
 
 func (s *UserService) CreateUser(user *domain.User) error {
 	// 1. Check if email already exists
-	existingUser, err := s.repo.GetByEmail(user.Email)
+	existingUser, err := s.repo.GetUserByEmail(user.Email)
 	if err != nil {
 		return err
 	}
@@ -54,7 +56,7 @@ func (s *UserService) CreateUser(user *domain.User) error {
 
 func (s *UserService) LoginUser(user *domain.User) (error, string) {
 	// 1. Retrieve user by email
-	existingUser, err := s.repo.GetByEmail(user.Email)
+	existingUser, err := s.repo.GetUserByEmail(user.Email)
 	if err != nil {
 		return err, ""
 	}
@@ -68,7 +70,7 @@ func (s *UserService) LoginUser(user *domain.User) (error, string) {
 		return fmt.Errorf("invalid email or password"), ""
 	}
 
-	// 3. Generate JWT token 
+	// 3. Generate JWT token , keep in local variable to avoid conflict with imported package
 	_token := jwt.New(jwt.SigningMethodHS256)
 	claims := _token.Claims.(jwt.MapClaims)
 	claims["user_id"] = existingUser.ID
@@ -85,4 +87,28 @@ func (s *UserService) LoginUser(user *domain.User) (error, string) {
 	}
 
 	return nil, token
+}
+
+func (s *UserService) GetUserByID(id uint) (*domain.User, error) {
+	return s.repo.GetUserByID(id)
+}
+
+func (s *UserService) UpdateUser(user *domain.User,password,newPassword string) error {
+	if password == "" && newPassword == "" {
+		return s.repo.Update(user)
+	}
+	fmt.Println("New Password to be set:", newPassword)
+	existingUser, err := s.repo.GetUserByEmail(user.Email)
+
+	// 1. Verify current password
+	if !s.hash.Verify(password, existingUser.Password) {
+		return fmt.Errorf("current password is incorrect")
+	}
+	fmt.Println("Current Password verified successfully")
+	hashedPassword, err := s.hash.Hash(newPassword)
+	if err != nil {
+		return err
+	}
+	user.Password = string(hashedPassword)
+	return s.repo.Update(user)
 }

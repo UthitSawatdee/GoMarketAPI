@@ -22,7 +22,7 @@ func (r *GormUserRepository) Create(user *domain.User) error {
 	return nil
 }
 
-func (r *GormUserRepository) GetByEmail(email string) (*domain.User, error) {
+func (r *GormUserRepository) GetUserByEmail(email string) (*domain.User, error) {
 	user := new(domain.User) // → user เป็น (pointer)
 	err := r.db.Where("email =?", email).First(user).Error
 
@@ -34,4 +34,21 @@ func (r *GormUserRepository) GetByEmail(email string) (*domain.User, error) {
 		return nil, err
 	}
 	return user, nil
+}
+
+func (r *GormUserRepository) GetUserByID(id uint) (*domain.User, error) {
+	var user domain.User
+	err := r.db.First(&user, id).Error
+	return &user, err
+}
+
+func (r *GormUserRepository) Update(user *domain.User) error {
+	result := r.db.Where("id = ?", user.ID).Updates(user) 
+	if result.Error != nil {
+		return result.Error
+	}
+    if result.RowsAffected == 0 {
+        return gorm.ErrRecordNotFound
+    }
+	return nil
 }

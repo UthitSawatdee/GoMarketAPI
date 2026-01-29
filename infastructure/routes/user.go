@@ -20,11 +20,11 @@ func setupUserRoutes(api fiber.Router, c *container.Container,cfg *config.Config
     user.Get("/profile", c.UserHandler.GetProfile)
 
     // Cart routes
-    // user.Get("/cart",c.UserHandler.ViewCart)
-    user.Put("/cart/:product_id",c.CartHandler.AddProductToCart)
-    // user.Delete("/cart/:id",c.UserHandler.RemoveProduct)
-    // user.Delete("/cart",c.UserHandler.DeleteCart)
-    // user.Post("/cart/checkout",c.UserHandler.Checkout)
+    user.Get("/cart",c.CartHandler.ViewCart)
+    user.Post("/cart/item/:product_id",c.CartHandler.AddProductToCart) //add or update product in cart
+    user.Delete("/cart/:product_id",c.CartHandler.DeleteCartItem) //decrease or remove product from cart
+    user.Delete("/cart",c.CartHandler.DeleteCart)
+    user.Post("/cart/checkout",c.CartHandler.Checkout)
 
     // user.Get("/orders",c.UserHandler.ViewOrder)
     // user.Get("/orders/:id",c.UserHandler.ViewOrderDetail)
