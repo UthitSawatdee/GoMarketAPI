@@ -13,4 +13,5 @@ type UserRepository interface {
 	// GetUser(id uint) (*domain.User, error)
 	// ListUsers() ([]*domain.User, error)
 	// GetByEmail(email string) (*domain.User, error)
+	
 }

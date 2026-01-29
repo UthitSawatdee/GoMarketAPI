@@ -7,6 +7,6 @@ import (
 
 func setupPublicRoutes(api fiber.Router, c *container.Container) {
     api.Post("/register", c.UserHandler.Register)
-    // api.Post("/login", c.UserHandler.Login)
+    api.Post("/login", c.UserHandler.Login)
 
 }

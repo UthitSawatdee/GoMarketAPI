@@ -85,3 +85,50 @@ func (h *HttpUserHandler) Register(c *fiber.Ctx) error {
 		},
 	})
 }
+
+func (h *HttpUserHandler) Login(c *fiber.Ctx) error {
+	request := new(LoginRequest)
+	if err := c.BodyParser(request); err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"error":   "Invalid request body",
+		})
+	}
+
+	// Validate request
+	if request.Email == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"error":   "Email is required",
+		})
+	}
+	if request.Password == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"success": false,
+			"error":   "Password is required",
+		})
+	}
+
+	user := &domain.User{
+		Email:    request.Email,
+		Password: request.Password,
+	}
+
+	// Call use case to handle login
+	err, token := h.userUseCase.LoginUser(user)
+	if err != nil {
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"success": false,
+			"message": "Login failed",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"success": true,
+		"message": "Login successful",
+		"data": fiber.Map{
+			"token": token,
+		},
+	})
+}
