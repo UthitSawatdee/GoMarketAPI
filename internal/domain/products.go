@@ -2,7 +2,7 @@ package domain
 
 import (
 	"time"
-
+	"errors"
 	"gorm.io/gorm"
 )
 
@@ -19,4 +19,18 @@ type Product struct {
 	CreatedAt time.Time      `json:"created_at"`
 	UpdatedAt time.Time      `json:"updated_at"`
 	DeletedAt gorm.DeletedAt `json:"-" gorm:"index"`
+}
+
+// HasStock checks if product has enough stock
+func (p *Product) HasStock(quantity int) bool {
+    return p.Stock >= quantity
+}
+
+// DeductStock reduces the stock by given quantity
+func (p *Product) DeductStock(quantity int) error {
+    if !p.HasStock(quantity) {
+        return errors.New("insufficient stock")
+    }
+    p.Stock -= quantity
+    return nil
 }
