@@ -43,3 +43,9 @@ This project follows **Clean Architecture** (Hexagonal Architecture) principles:
 | POST | `/api/v1/admin/categories` | Create category |
 | PUT | `/api/v1/admin/categories/:id` | Update category |
 | DELETE | `/api/v1/admin/categories/:id` | Delete category |
+
+### User Endpoints (Auth Required)
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| GET | `/api/v1/user/profile` | Get profile |
+| PUT | `/api/v1/user/profile` | Update profile/Change password  |
