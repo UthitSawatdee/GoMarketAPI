@@ -11,6 +11,6 @@ func Setup(app *fiber.App, c *container.Container, cfg *config.Config) {
     api := app.Group("/api/v1")
 
     setupPublicRoutes(api, c)
-    // setupUserRoutes(api, c, cfg)
-    // setupAdminRoutes(api, c, cfg)
+    setupUserRoutes(api, c, cfg)
+    setupAdminRoutes(api, c, cfg)
 }
