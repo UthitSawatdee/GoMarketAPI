@@ -19,6 +19,7 @@ type UserUseCase interface {
 	LoginUser(user *domain.User) (error, string)
 	GetUserByID(id uint) (*domain.User, error)
 	UpdateUser(user *domain.User, password, newPassword string) error
+	AllUsers() ([]*domain.User, error)
 }
 
 type UserService struct {
@@ -111,4 +112,8 @@ func (s *UserService) UpdateUser(user *domain.User,password,newPassword string) 
 	}
 	user.Password = string(hashedPassword)
 	return s.repo.Update(user)
+}
+
+func (s *UserService) AllUsers() ([]*domain.User, error) {
+	return s.repo.AllUsers()
 }

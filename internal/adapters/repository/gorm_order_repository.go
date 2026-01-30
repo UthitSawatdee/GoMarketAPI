@@ -54,3 +54,24 @@ func (r *GormOrderRepository) DeleteOrderByOrderID(orderID string) error {
 	
 	return nil
 }
+
+func (r *GormOrderRepository) AllOrders() ([]*domain.Order, error) {
+	var orders []*domain.Order
+	err := r.db.Preload("OrderItems").Find(&orders).Error
+	if err != nil {
+		return nil, err
+	}
+	return orders, nil
+}
+
+func (r *GormOrderRepository) UpdateOrderStatus(orderID string, status string) (*domain.Order, error) {
+	var order domain.Order
+	result := r.db.Model(&order).Where("id = ?", orderID).Update("status", status)
+	if result.Error != nil {
+		return nil, result.Error
+	}
+	if result.RowsAffected == 0 {
+		return nil, gorm.ErrRecordNotFound
+	}
+	return &order, nil
+}	

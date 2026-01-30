@@ -239,3 +239,18 @@ func (h *HttpUserHandler) UpdateProfile(c *fiber.Ctx) error {
 		"Username": user.Username,
 	})
 }
+
+func (h *HttpUserHandler) AllUsers(c *fiber.Ctx) error {
+	users, err := h.userUseCase.AllUsers()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"message": "Failed to retrieve users",
+			"error":   err.Error(),
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "Users retrieved successfully",
+		"data":    users,
+	})
+}

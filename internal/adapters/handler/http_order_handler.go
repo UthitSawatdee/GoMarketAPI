@@ -61,3 +61,47 @@ func (h *HttpOrderHandler) CancelOrder(c *fiber.Ctx) error {
 		"message": "Order canceled successfully",
 	})
 }
+
+func (h *HttpOrderHandler) ViewAllOrders(c *fiber.Ctx) error {
+	// Implementation for viewing all orders goes here
+	request, err := h.OrderUseCase.AllOrders()
+	if err != nil {
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to retrieve orders",
+		})
+	}
+
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message": "All orders retrieved successfully",
+		"data":    request,
+	})
+}
+
+func (h *HttpOrderHandler) UpdateOrderStatus(c *fiber.Ctx) error {
+	// Implementation for updating order status goes here
+	orderID := c.Params("orderID")
+	status := c.Params("status")
+
+	if orderID == "" {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{
+			"error": "Order ID is required",
+		})
+	}
+
+	order,oldStatus,err := h.OrderUseCase.UpdateOrderStatus(orderID, status)
+	if err != nil {
+		if err.Error() == "record not found" {
+			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
+				"error": "Order not found",
+			})
+		}
+		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
+			"error": "Failed to update order status",
+		})
+	}
+return c.Status(fiber.StatusOK).JSON(fiber.Map{
+    "message": "Order status updated successfully",
+    "old_status": oldStatus,
+    "new_status": order.Status,
+})
+}

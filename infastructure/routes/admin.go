@@ -23,4 +23,7 @@ func setupAdminRoutes(api fiber.Router, c *container.Container,cfg *config.Confi
     admin.Put("/category/:id", c.CategoriesHandler.UpdateCategory)
     admin.Delete("/category/:id", c.CategoriesHandler.DeleteCategory)
 
+    admin.Get("/users", c.UserHandler.AllUsers)
+    admin.Get("/orders", c.OrderHandler.ViewAllOrders)
+    admin.Put("/order/status/:orderID/:status", c.OrderHandler.UpdateOrderStatus)
 }
