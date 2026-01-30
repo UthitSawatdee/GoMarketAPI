@@ -1,0 +1,363 @@
+basePath: /api/v1
+definitions:
+  handler.LoginRequest:
+    description: User login request body
+    properties:
+      email:
+        example: user@example.com
+        type: string
+      password:
+        example: securepass123
+        type: string
+    type: object
+  handler.ProductRequest:
+    description: Product creation/update request
+    properties:
+      category_id:
+        example: 1
+        type: integer
+      description:
+        example: Latest Apple smartphone
+        type: string
+      id:
+        example: 1
+        type: integer
+      name:
+        example: iPhone 15 Pro
+        type: string
+      price:
+        example: 999.99
+        type: number
+      stock:
+        example: 100
+        type: integer
+    type: object
+  handler.RegisterRequest:
+    description: User registration request body
+    properties:
+      email:
+        example: user@example.com
+        type: string
+      password:
+        example: securepass123
+        type: string
+      role:
+        enum:
+        - user
+        - admin
+        example: user
+        type: string
+      username:
+        example: johndoe
+        type: string
+    type: object
+host: localhost:8000
+info:
+  contact:
+    email: support@ecommerce-api.com
+    name: API Support
+  description: Production-ready RESTful API for e-commerce platform built with Go
+    and Clean Architecture.
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+  termsOfService: http://swagger.io/terms/
+  title: E-Commerce API
+  version: 1.0.0
+paths:
+  /admin/product:
+    post:
+      consumes:
+      - application/json
+      description: Create a new product in the catalog (Admin only)
+      parameters:
+      - description: Product details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.ProductRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Product created successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Admin access required
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Create a new product
+      tags:
+      - Products
+  /admin/product/{id}:
+    delete:
+      description: Delete a product by ID (Admin only)
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Product deleted successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Admin access required
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Product not found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Delete a product
+      tags:
+      - Products
+    put:
+      consumes:
+      - application/json
+      description: Update an existing product by ID (Admin only)
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Updated product details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.ProductRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Product updated successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Unauthorized
+          schema:
+            additionalProperties: true
+            type: object
+        "403":
+          description: Admin access required
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Product not found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      security:
+      - BearerAuth: []
+      summary: Update a product
+      tags:
+      - Products
+  /login:
+    post:
+      consumes:
+      - application/json
+      description: Authenticate user with email and password, returns JWT token
+      parameters:
+      - description: User login credentials
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.LoginRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Login successful with JWT token
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body
+          schema:
+            additionalProperties: true
+            type: object
+        "401":
+          description: Invalid credentials
+          schema:
+            additionalProperties: true
+            type: object
+      summary: User login
+      tags:
+      - Authentication
+  /product/{name}:
+    get:
+      description: Search for a product by its name
+      parameters:
+      - description: Product name
+        in: path
+        name: name
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Product found
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Product not found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Search product by name
+      tags:
+      - Products
+  /productBy/cat/{category}:
+    get:
+      description: Filter products by category name
+      parameters:
+      - description: Category name
+        in: path
+        name: category
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Filtered products
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: No products found
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get products by category
+      tags:
+      - Products
+  /products:
+    get:
+      description: Retrieve all products from the catalog
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: List of products
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get all products
+      tags:
+      - Products
+  /register:
+    post:
+      consumes:
+      - application/json
+      description: Create a new user account with email, password, and username
+      parameters:
+      - description: User registration details
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/handler.RegisterRequest'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: User registered successfully
+          schema:
+            additionalProperties: true
+            type: object
+        "400":
+          description: Invalid request body or validation error
+          schema:
+            additionalProperties: true
+            type: object
+        "500":
+          description: Internal server error
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Register a new user
+      tags:
+      - Authentication
+schemes:
+- http
+- https
+securityDefinitions:
+  BearerAuth:
+    description: Type "Bearer" followed by a space and JWT token.
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

@@ -1,9 +1,9 @@
 package routes
 
 import (
-    "github.com/Fal2o/E-Commerce_API/infastructure/container"
+    "github.com/Fal2o/E-Commerce_API/infrastructure/container"
     "github.com/gofiber/fiber/v2"
-    "github.com/Fal2o/E-Commerce_API/infastructure/config"
+    "github.com/Fal2o/E-Commerce_API/infrastructure/config"
     "github.com/Fal2o/E-Commerce_API/internal/middleware"
 
 

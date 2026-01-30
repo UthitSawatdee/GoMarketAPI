@@ -1,18 +1,41 @@
 package main
 
 import (
-	"github.com/Fal2o/E-Commerce_API/infastructure/config"
-	"github.com/Fal2o/E-Commerce_API/infastructure/container"
-	"github.com/Fal2o/E-Commerce_API/infastructure/routes"
-	"github.com/Fal2o/E-Commerce_API/infastructure/server"
-	database "github.com/Fal2o/E-Commerce_API/migrations"
+	"flag"
 	"log"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
-	"flag"
+
+	_ "github.com/Fal2o/E-Commerce_API/docs"
+	"github.com/Fal2o/E-Commerce_API/infrastructure/config"
+	"github.com/Fal2o/E-Commerce_API/infrastructure/container"
+	"github.com/Fal2o/E-Commerce_API/infrastructure/routes"
+	"github.com/Fal2o/E-Commerce_API/infrastructure/server"
+	database "github.com/Fal2o/E-Commerce_API/migrations" 
+	"github.com/gofiber/swagger"
 )
+
+// @title E-Commerce API
+// @version 1.0.0
+// @description Production-ready RESTful API for e-commerce platform built with Go and Clean Architecture.
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name API Support
+// @contact.email support@ecommerce-api.com
+
+// @license.name MIT
+// @license.url https://opensource.org/licenses/MIT
+
+// @host localhost:8000
+// @BasePath /api/v1
+// @schemes http https
+
+// @securityDefinitions.apikey BearerAuth
+// @in header
+// @name Authorization
+// @description Type "Bearer" followed by a space and JWT token.
 
 func main() {
 	// Load config
@@ -39,7 +62,7 @@ func main() {
 
 	// Create server
 	app := server.NewFiberApp(cfg)
-
+	app.Get("/swagger/*", swagger.HandlerDefault)
 	// Setup routes
 	routes.Setup(app, c, cfg)
 
@@ -56,7 +79,7 @@ func main() {
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM)
 	<-quit
 
-	log.Println("🛑 Shutting down...")
+	log.Println("Shutting down...")
 	if err := app.ShutdownWithTimeout(10 * time.Second); err != nil {
 		log.Fatalf("Forced shutdown: %v", err)
 	}

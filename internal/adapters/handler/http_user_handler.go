@@ -1,11 +1,11 @@
 package handler
 
 import (
+	"fmt"
+
 	domain "github.com/Fal2o/E-Commerce_API/internal/domain"
 	usecases "github.com/Fal2o/E-Commerce_API/internal/usecases"
 	"github.com/gofiber/fiber/v2"
-	"fmt"
-
 )
 
 type HttpUserHandler struct {
@@ -17,19 +17,32 @@ func NewHttpUserHandler(useCase usecases.UserUseCase) *HttpUserHandler {
 }
 
 // RegisterRequest represents registration request
+// @Description User registration request body
 type RegisterRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-	Username string `json:"username"`
-	Role     string `json:"role"`
+	Email    string `json:"email" example:"user@example.com"`
+	Password string `json:"password" example:"securepass123"`
+	Username string `json:"username" example:"johndoe"`
+	Role     string `json:"role" example:"user" enums:"user,admin"`
 }
 
 // LoginRequest represents login request
+// @Description User login request body
 type LoginRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Email    string `json:"email" example:"user@example.com"`
+	Password string `json:"password" example:"securepass123"`
 }
 
+// Register godoc
+// @Summary Register a new user
+// @Description Create a new user account with email, password, and username
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param request body RegisterRequest true "User registration details"
+// @Success 201 {object} map[string]interface{} "User registered successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid request body or validation error"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /register [post]
 func (h *HttpUserHandler) Register(c *fiber.Ctx) error {
 	request := new(RegisterRequest)
 	if err := c.BodyParser(request); err != nil {
@@ -90,6 +103,17 @@ func (h *HttpUserHandler) Register(c *fiber.Ctx) error {
 	})
 }
 
+// Login godoc
+// @Summary User login
+// @Description Authenticate user with email and password, returns JWT token
+// @Tags Authentication
+// @Accept json
+// @Produce json
+// @Param request body LoginRequest true "User login credentials"
+// @Success 200 {object} map[string]interface{} "Login successful with JWT token"
+// @Failure 400 {object} map[string]interface{} "Invalid request body"
+// @Failure 401 {object} map[string]interface{} "Invalid credentials"
+// @Router /login [post]
 func (h *HttpUserHandler) Login(c *fiber.Ctx) error {
 	request := new(LoginRequest)
 	if err := c.BodyParser(request); err != nil {
@@ -176,9 +200,9 @@ func (h *HttpUserHandler) GetProfile(c *fiber.Ctx) error {
 
 // UpdateProfileRequest represents update profile request
 type UpdateProfileRequest struct {
-	Username string `json:"username"`
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Username    string `json:"username"`
+	Email       string `json:"email"`
+	Password    string `json:"password"`
 	NewPassword string `json:"new_password"`
 }
 
@@ -221,11 +245,11 @@ func (h *HttpUserHandler) UpdateProfile(c *fiber.Ctx) error {
 	}
 	if request.Email != "" {
 		user.Email = request.Email
-	}		
+	}
 	fmt.Println("Request Password:", request.Password)
 	fmt.Println("Request NewPassword:", request.NewPassword)
-	
-	if err := h.userUseCase.UpdateUser(user,request.Password,request.NewPassword); err != nil {
+
+	if err := h.userUseCase.UpdateUser(user, request.Password, request.NewPassword); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{
 			"success": false,
 			"message": "Failed to update user profile",
@@ -233,7 +257,7 @@ func (h *HttpUserHandler) UpdateProfile(c *fiber.Ctx) error {
 		})
 	}
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
-		"success": true,
+		"success":  true,
 		"ID":       user.ID,
 		"Email":    user.Email,
 		"Username": user.Username,
