@@ -52,7 +52,7 @@ var AppConfigInstance *Config
 // LoadConfig loads configuration from environment variables
 func LoadConfig() *Config {
 	if err := godotenv.Load(); err != nil {
-		log.Println("⚠️  No .env file found, using environment variables")
+		log.Println("No .env file found, using environment variables")
 	}
 
 	config := &Config{

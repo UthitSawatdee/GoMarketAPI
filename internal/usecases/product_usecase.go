@@ -93,3 +93,4 @@ func (s *ProductService) GetProductByName(Name string) ([]*domain.Product, error
 	}
 	return product, nil
 }
+

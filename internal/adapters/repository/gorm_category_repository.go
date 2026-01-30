@@ -60,11 +60,11 @@ func (r *GormCategoryRepository) GetByName(name string) (*domain.Category, error
 }
 
 func (r *GormCategoryRepository) GetByID(id string) (*domain.Category, error) {
-	category := new(domain.Category)
+		category := new(domain.Category)
 	err := r.db.Where("id =?", id).First(category).Error
 
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		return nil, err
+		return nil, nil
 	}
 
 	if err != nil {
@@ -72,3 +72,4 @@ func (r *GormCategoryRepository) GetByID(id string) (*domain.Category, error) {
 	}
 	return category, nil
 }
+

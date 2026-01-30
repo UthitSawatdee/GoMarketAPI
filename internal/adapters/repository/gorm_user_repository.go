@@ -52,3 +52,12 @@ func (r *GormUserRepository) Update(user *domain.User) error {
     }
 	return nil
 }
+
+func (r *GormUserRepository) AllUsers() ([]*domain.User, error) {
+	var users []*domain.User
+	err := r.db.Find(&users).Error
+	if err != nil {
+		return nil, err
+	}
+	return users, nil
+}

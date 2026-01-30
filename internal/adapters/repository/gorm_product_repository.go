@@ -66,7 +66,7 @@ func (r *GormProductRepository) GetByName(name string) (*domain.Product, error) 
 
 func (r *GormProductRepository) GetAllProducts() ([]*domain.Product, error) {
 	var products []*domain.Product
-	err := r.db.Find(&products).Error
+    err := r.db.Preload("Category").Find(&products).Error
 	if err != nil {
 		return nil, err
 	}
@@ -98,4 +98,33 @@ func (r *GormProductRepository) GetProductByName(name string) ([]*domain.Product
 	}
 
 	return product, nil
+}
+
+func (r *GormProductRepository) GetProductByID(productID uint) (*domain.Product, error) {
+	product := new(domain.Product)
+	err := r.db.Preload("Category").First(product, productID).Error
+	if err != nil {
+		return nil, err
+	}
+	return product, nil
+}
+
+// UpdateStock updates product stock with optimistic locking
+// quantity: จำนวนที่จะลด (ค่าบวก = ลด, ค่าลบ = เพิ่ม)
+func (r *GormProductRepository) UpdateStock(productID uint, quantity int) error {
+    // ใช้ raw SQL เพื่อ atomic update และป้องกัน race condition
+    result := r.db.Model(&domain.Product{}).
+        Where("id = ? AND stock >= ?", productID, quantity).
+        Update("stock", gorm.Expr("stock - ?", quantity))
+
+    if result.Error != nil {
+        return fmt.Errorf("%w: %v", errors.New("database error"), result.Error)
+    }
+
+    // ถ้า RowsAffected = 0 หมายความว่า stock ไม่พอ หรือ product ไม่มี
+    if result.RowsAffected == 0 {
+        return errors.New("insufficient stock")
+    }
+
+    return nil
 }

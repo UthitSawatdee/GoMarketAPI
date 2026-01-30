@@ -14,9 +14,8 @@ type Container struct {
     UserHandler       *handlers.HttpUserHandler
     ProductHandler    *handlers.HttpProductHandler
     CategoriesHandler *handlers.HttpCategoryHandler
-    // CartHandler       *handlers.HttpCartHandler
-    // OrderHandler      *handlers.HttpOrderHandler
-    // HealthHandler     *handlers.HealthHandler
+    CartHandler       *handlers.HttpCartHandler
+    OrderHandler      *handlers.HttpOrderHandler
 }
 
 func NewContainer(db *gorm.DB) *Container {
@@ -24,24 +23,24 @@ func NewContainer(db *gorm.DB) *Container {
     userRepo := adapters.NewGormUserRepository(db)
     productRepo := adapters.NewGormProductRepository(db)
     categoriesRepo := adapters.NewGormCategoryRepository(db)
-    // cartRepo := adapters.NewGormCartRepository(db)
-    // orderRepo := adapters.NewGormOrderRepository(db)
+    cartRepo := adapters.NewGormCartRepository(db)
+    orderRepo := adapters.NewGormOrderRepository(db)
 
     // Services
     passwordService := hash.NewPasswordService()
     userService := usecases.NewUserService(userRepo, passwordService)
     productService := usecases.NewProductService(productRepo)
     categoriesService := usecases.NewCategoryService(categoriesRepo)
-    // cartService := usecases.NewCartService(cartRepo)
-    // orderService := usecases.NewOrderService(orderRepo, cartRepo, productRepo)
+    cartService := usecases.NewCartService(cartRepo,productRepo,orderRepo)
+    orderService := usecases.NewOrderService(orderRepo)
 
     // Handlers
     return &Container{
         UserHandler:       handlers.NewHttpUserHandler(userService),
         ProductHandler:    handlers.NewHttpProductHandler(productService),
         CategoriesHandler: handlers.NewHttpCategoryHandler(categoriesService),
-        // CartHandler:       adapters.NewHttpCartHandler(cartService),
-        // OrderHandler:      adapters.NewHttpOrderHandler(orderService),
+        CartHandler:       handlers.NewHttpCartHandler(cartService),
+        OrderHandler:      handlers.NewHttpOrderHandler(orderService),
         // HealthHandler:     adapters.NewHealthHandler(db),
     }
 }
