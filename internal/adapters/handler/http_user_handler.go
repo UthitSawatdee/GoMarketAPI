@@ -161,6 +161,16 @@ func (h *HttpUserHandler) Login(c *fiber.Ctx) error {
 	})
 }
 
+// GetProfile godoc
+// @Summary Get current user profile
+// @Description Get the profile information of the authenticated user
+// @Tags User
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} map[string]interface{} "User profile retrieved successfully"
+// @Failure 401 {object} map[string]interface{} "Unauthorized - Invalid or missing token"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /user/profile [get]
 func (h *HttpUserHandler) GetProfile(c *fiber.Ctx) error {
 	userID := c.Locals("user_id")
 	// fmt.Println("Retrieved userID from context:", userID)
@@ -206,8 +216,20 @@ type UpdateProfileRequest struct {
 	NewPassword string `json:"new_password"`
 }
 
-// UpdateProfile updates the current user's profile
-// PUT /user/profile
+// UpdateProfile godoc
+// @Summary Update user profile
+// @Description Update the authenticated user's profile (username, email, password)
+// @Tags User
+// @Accept json
+// @Produce json
+// @Security BearerAuth
+// @Param request body UpdateProfileRequest true "Profile update details"
+// @Success 200 {object} map[string]interface{} "Profile updated successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid request body"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 404 {object} map[string]interface{} "User not found"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /user/profile [put]
 func (h *HttpUserHandler) UpdateProfile(c *fiber.Ctx) error {
 	userIDValue := c.Locals("user_id")
 	if userIDValue == nil {
@@ -264,6 +286,17 @@ func (h *HttpUserHandler) UpdateProfile(c *fiber.Ctx) error {
 	})
 }
 
+// AllUsers godoc
+// @Summary Get all users
+// @Description Retrieve a list of all registered users (Admin only)
+// @Tags Admin
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} map[string]interface{} "Users retrieved successfully"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Admin access required"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /admin/users [get]
 func (h *HttpUserHandler) AllUsers(c *fiber.Ctx) error {
 	users, err := h.userUseCase.AllUsers()
 	if err != nil {

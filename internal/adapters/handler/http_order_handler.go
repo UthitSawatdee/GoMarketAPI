@@ -14,6 +14,17 @@ func NewHttpOrderHandler(useCase usecases.OrderUseCase) *HttpOrderHandler {
 	return &HttpOrderHandler{OrderUseCase: useCase}
 }
 
+// ViewOrder godoc
+// @Summary View user orders
+// @Description Get all orders for the authenticated user
+// @Tags Orders
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} map[string]interface{} "Orders retrieved successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid user ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /user/orders [get]
 func (h *HttpOrderHandler) ViewOrder(c *fiber.Ctx) error {
 	// Implementation for viewing orders goes here
 	userID := c.Locals("user_id").(uint)
@@ -35,6 +46,19 @@ func (h *HttpOrderHandler) ViewOrder(c *fiber.Ctx) error {
 	})
 }
 
+// CancelOrder godoc
+// @Summary Cancel an order
+// @Description Cancel a specific order by its ID
+// @Tags Orders
+// @Produce json
+// @Security BearerAuth
+// @Param orderID path string true "Order ID"
+// @Success 200 {object} map[string]interface{} "Order canceled successfully"
+// @Failure 400 {object} map[string]interface{} "Order ID is required"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 404 {object} map[string]interface{} "Order not found"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /user/order/cancel/{orderID} [delete]
 func (h *HttpOrderHandler) CancelOrder(c *fiber.Ctx) error {
 	// Implementation for canceling an order goes here
 	orderID := c.Params("orderID")
@@ -62,6 +86,17 @@ func (h *HttpOrderHandler) CancelOrder(c *fiber.Ctx) error {
 	})
 }
 
+// ViewAllOrders godoc
+// @Summary Get all orders
+// @Description Retrieve all orders in the system (Admin only)
+// @Tags Admin
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} map[string]interface{} "All orders retrieved successfully"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Admin access required"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /admin/orders [get]
 func (h *HttpOrderHandler) ViewAllOrders(c *fiber.Ctx) error {
 	// Implementation for viewing all orders goes here
 	request, err := h.OrderUseCase.AllOrders()
@@ -77,6 +112,21 @@ func (h *HttpOrderHandler) ViewAllOrders(c *fiber.Ctx) error {
 	})
 }
 
+// UpdateOrderStatus godoc
+// @Summary Update order status
+// @Description Update the status of a specific order (Admin only)
+// @Tags Admin
+// @Produce json
+// @Security BearerAuth
+// @Param orderID path string true "Order ID"
+// @Param status path string true "New status" Enums(pending, processing, shipped, delivered, cancelled)
+// @Success 200 {object} map[string]interface{} "Order status updated successfully"
+// @Failure 400 {object} map[string]interface{} "Order ID is required"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 403 {object} map[string]interface{} "Admin access required"
+// @Failure 404 {object} map[string]interface{} "Order not found"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /admin/order/status/{orderID}/{status} [put]
 func (h *HttpOrderHandler) UpdateOrderStatus(c *fiber.Ctx) error {
 	// Implementation for updating order status goes here
 	orderID := c.Params("orderID")
@@ -88,7 +138,7 @@ func (h *HttpOrderHandler) UpdateOrderStatus(c *fiber.Ctx) error {
 		})
 	}
 
-	order,oldStatus,err := h.OrderUseCase.UpdateOrderStatus(orderID, status)
+	order, oldStatus, err := h.OrderUseCase.UpdateOrderStatus(orderID, status)
 	if err != nil {
 		if err.Error() == "record not found" {
 			return c.Status(fiber.StatusNotFound).JSON(fiber.Map{
@@ -99,9 +149,9 @@ func (h *HttpOrderHandler) UpdateOrderStatus(c *fiber.Ctx) error {
 			"error": "Failed to update order status",
 		})
 	}
-return c.Status(fiber.StatusOK).JSON(fiber.Map{
-    "message": "Order status updated successfully",
-    "old_status": oldStatus,
-    "new_status": order.Status,
-})
+	return c.Status(fiber.StatusOK).JSON(fiber.Map{
+		"message":    "Order status updated successfully",
+		"old_status": oldStatus,
+		"new_status": order.Status,
+	})
 }

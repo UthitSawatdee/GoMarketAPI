@@ -18,8 +18,18 @@ func NewHttpCartHandler(useCase usecases.CartUseCase) *HttpCartHandler {
 	return &HttpCartHandler{cartUseCase: useCase}
 }
 
-// AddToCart handles adding items to the cart
-// POST /cart/add
+// AddProductToCart godoc
+// @Summary Add product to cart
+// @Description Add a product to the authenticated user's cart
+// @Tags Cart
+// @Produce json
+// @Security BearerAuth
+// @Param product_id path string true "Product ID"
+// @Success 200 {object} map[string]interface{} "Product added to cart successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid product ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /user/cart/item/{product_id} [post]
 func (h *HttpCartHandler) AddProductToCart(c *fiber.Ctx) error {
 	productIDStr := c.Params("product_id")
 	productID, err := strconv.ParseUint(productIDStr, 10, 64)
@@ -50,6 +60,18 @@ func (h *HttpCartHandler) AddProductToCart(c *fiber.Ctx) error {
 
 }
 
+// DeleteCartItem godoc
+// @Summary Remove or decrease cart item
+// @Description Remove a product from cart or decrease its quantity by 1
+// @Tags Cart
+// @Produce json
+// @Security BearerAuth
+// @Param product_id path string true "Product ID"
+// @Success 200 {object} map[string]interface{} "Product removed/decreased from cart successfully"
+// @Failure 400 {object} map[string]interface{} "Invalid product ID"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /user/cart/{product_id} [delete]
 func (h *HttpCartHandler) DeleteCartItem(c *fiber.Ctx) error {
 	userID := c.Locals("user_id").(uint)
 	productIDStr := c.Params("product_id")
@@ -84,6 +106,16 @@ func (h *HttpCartHandler) DeleteCartItem(c *fiber.Ctx) error {
 	}
 }
 
+// DeleteCart godoc
+// @Summary Clear entire cart
+// @Description Remove all items from the authenticated user's cart
+// @Tags Cart
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} map[string]interface{} "Cart cleared successfully"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /user/cart/cancel [delete]
 func (h *HttpCartHandler) DeleteCart(c *fiber.Ctx) error {
 	userID := c.Locals("user_id").(uint)
 
@@ -100,6 +132,16 @@ func (h *HttpCartHandler) DeleteCart(c *fiber.Ctx) error {
 	})
 }
 
+// ViewCart godoc
+// @Summary View cart contents
+// @Description Get all items in the authenticated user's cart
+// @Tags Cart
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} map[string]interface{} "Cart items retrieved successfully"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 500 {object} map[string]interface{} "Internal server error"
+// @Router /user/cart [get]
 func (h *HttpCartHandler) ViewCart(c *fiber.Ctx) error {
 	userID := c.Locals("user_id").(uint)
 
@@ -117,6 +159,16 @@ func (h *HttpCartHandler) ViewCart(c *fiber.Ctx) error {
 	})
 }
 
+// Checkout godoc
+// @Summary Checkout cart
+// @Description Convert cart items into an order and clear the cart
+// @Tags Cart
+// @Produce json
+// @Security BearerAuth
+// @Success 200 {object} map[string]interface{} "Checkout successful"
+// @Failure 401 {object} map[string]interface{} "Unauthorized"
+// @Failure 500 {object} map[string]interface{} "Internal server error - Failed to checkout"
+// @Router /user/cart/checkout [post]
 func (h *HttpCartHandler) Checkout(c *fiber.Ctx) error {
 	userID := c.Locals("user_id").(uint)
 	// Call use case to checkout cart
@@ -130,5 +182,5 @@ func (h *HttpCartHandler) Checkout(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusOK).JSON(fiber.Map{
 		"message": "Checkout successful",
 		"data":    order,
-	})	
+	})
 }
