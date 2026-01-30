@@ -303,25 +303,6 @@ curl -X POST http://localhost:8000/api/v1/user/cart/item/1 \
 
 ---
 
-## 🧪 Testing
-
-```bash
-# Run all tests
-go test ./...
-
-# Run tests with coverage
-go test -cover ./...
-
-# Run tests with verbose output
-go test -v ./...
-
-# Generate coverage report
-go test -coverprofile=coverage.out ./...
-go tool cover -html=coverage.out -o coverage.html
-```
-
----
-
 ## 🐳 Deployment
 
 ### Docker Production Build
@@ -337,12 +318,6 @@ docker run -p 8000:8000 --env-file .env ecommerce-api:latest
 ```bash
 docker-compose up -d
 ```
-
----
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
