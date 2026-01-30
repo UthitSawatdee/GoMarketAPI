@@ -1,7 +1,6 @@
 # 🛒 E-Commerce REST API
 
 [![Go Version](https://img.shields.io/badge/Go-1.23+-00ADD8?style=flat&logo=go)](https://golang.org/)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Architecture](https://img.shields.io/badge/Architecture-Clean%20Architecture-blue.svg)](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
 
 A **production-ready** RESTful API for an e-commerce platform built with **Go (Golang)** following **Clean Architecture** (Hexagonal Architecture) principles. This project demonstrates best practices in API design, authentication, and modular software architecture.
