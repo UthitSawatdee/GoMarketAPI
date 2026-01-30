@@ -29,42 +29,42 @@ build:
 	@echo "🔨 Building $(APP_NAME)..."
 	@mkdir -p bin
 	@$(GOBUILD) $(LDFLAGS) -o $(BINARY_PATH) $(MAIN_PATH)
-	@echo "✅ Build complete: $(BINARY_PATH)"
+	@echo " Build complete: $(BINARY_PATH)"
 
 ## run: Run the application
 run:
-	@echo "🚀 Starting $(APP_NAME)..."
+	@echo " Starting $(APP_NAME)..."
 	@$(GOCMD) run $(MAIN_PATH)/main.go
 
 ## test: Run all tests
 test:
-	@echo "🧪 Running tests..."
+	@echo " Running tests..."
 	@$(GOTEST) -v ./...
 
 ## test-coverage: Run tests with coverage report
 test-coverage:
-	@echo "🧪 Running tests with coverage..."
+	@echo " Running tests with coverage..."
 	@$(GOTEST) -coverprofile=$(COVERAGE_FILE) -covermode=atomic ./...
 	@$(GOCMD) tool cover -html=$(COVERAGE_FILE) -o coverage.html
-	@echo "✅ Coverage report generated: coverage.html"
+	@echo " Coverage report generated: coverage.html"
 
 ## test-race: Run tests with race detector
 test-race:
-	@echo "🧪 Running tests with race detector..."
+	@echo " Running tests with race detector..."
 	@$(GOTEST) -race -v ./...
 
 ## seed: Seed the database with initial data
 seed:
-	@echo "🌱 Seeding database..."
+	@echo " Seeding database..."
 	@$(GOCMD) run $(MAIN_PATH)/main.go -seed
-	@echo "✅ Seed complete"
+	@echo " Seed complete"
 
 ## clean: Clean build artifacts
 clean:
-	@echo "🧹 Cleaning..."
+	@echo " Cleaning..."
 	@rm -rf bin/
 	@rm -f $(COVERAGE_FILE) coverage.html
-	@echo "✅ Clean complete"
+	@echo " Clean complete"
 
 ## lint: Run linter (requires golangci-lint)
 lint:
@@ -72,49 +72,49 @@ lint:
 	@if command -v golangci-lint >/dev/null 2>&1; then \
 		golangci-lint run ./...; \
 	else \
-		echo "⚠️  golangci-lint not installed. Run: brew install golangci-lint"; \
+		echo "  golangci-lint not installed. Run: brew install golangci-lint"; \
 	fi
 
 ## fmt: Format code
 fmt:
-	@echo "📝 Formatting code..."
+	@echo "Formatting code..."
 	@$(GOFMT) -s -w .
-	@echo "✅ Format complete"
+	@echo " Format complete"
 
 ## vet: Run go vet
 vet:
-	@echo "🔍 Running go vet..."
+	@echo " Running go vet..."
 	@$(GOVET) ./...
 
 ## mod-tidy: Tidy go modules
 mod-tidy:
-	@echo "📦 Tidying modules..."
+	@echo " Tidying modules..."
 	@$(GOMOD) tidy
-	@echo "✅ Modules tidied"
+	@echo " Modules tidied"
 
 ## mod-download: Download dependencies
 mod-download:
-	@echo "📥 Downloading dependencies..."
+	@echo " Downloading dependencies..."
 	@$(GOMOD) download
-	@echo "✅ Dependencies downloaded"
+	@echo " Dependencies downloaded"
 
 ## docker-build: Build Docker image
 docker-build:
-	@echo "🐳 Building Docker image..."
+	@echo " Building Docker image..."
 	@docker build -t $(APP_NAME):latest .
-	@echo "✅ Docker image built: $(APP_NAME):latest"
+	@echo " Docker image built: $(APP_NAME):latest"
 
 ## docker-up: Start Docker Compose services
 docker-up:
-	@echo "🐳 Starting services..."
+	@echo " Starting services..."
 	@docker-compose up -d
-	@echo "✅ Services started"
+	@echo " Services started"
 
 ## docker-down: Stop Docker Compose services
 docker-down:
-	@echo "🐳 Stopping services..."
+	@echo " Stopping services..."
 	@docker-compose down
-	@echo "✅ Services stopped"
+	@echo " Services stopped"
 
 ## docker-logs: View Docker logs
 docker-logs:
@@ -122,11 +122,11 @@ docker-logs:
 
 ## swagger: Generate Swagger documentation (requires swag)
 swagger:
-	@echo "📚 Generating Swagger docs..."
+	@echo " Generating Swagger docs..."
 	@if command -v swag >/dev/null 2>&1; then \
 		swag init -g $(MAIN_PATH)/main.go -o ./docs; \
 	else \
-		echo "⚠️  swag not installed. Run: go install github.com/swaggo/swag/cmd/swag@latest"; \
+		echo "  swag not installed. Run: go install github.com/swaggo/swag/cmd/swag@latest"; \
 	fi
 
 ## help: Show this help message

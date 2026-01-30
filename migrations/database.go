@@ -46,26 +46,26 @@ func InitDB() *gorm.DB {
 	})
 
 	if err != nil {
-		log.Fatalf("❌ Failed to connect to database: %v", err)
+		log.Fatalf("Failed to connect to database: %v", err)
 	}
 
 	// Configure connection pool
 	sqlDB, err := db.DB()
 	if err != nil {
-		log.Fatalf("❌ Failed to get database instance: %v", err)
+		log.Fatalf("Failed to get database instance: %v", err)
 	}
 
 	sqlDB.SetMaxIdleConns(10)
 	sqlDB.SetMaxOpenConns(100)
 	sqlDB.SetConnMaxLifetime(time.Hour)
 
-	log.Println("✅ Database connected successfully")
+	log.Println(" Database connected successfully")
 	return db
 }
 
 // AutoMigrate runs database migrations
 func AutoMigrate(db *gorm.DB) error {
-	log.Println("🔄 Running database migrations...")
+	log.Println(" Running database migrations...")
 
 	err := db.AutoMigrate(
 		&domain.User{},
@@ -78,11 +78,11 @@ func AutoMigrate(db *gorm.DB) error {
 	)
 
 	if err != nil {
-		log.Fatalf("❌ Migration failed: %v", err)
+		log.Fatalf(" Migration failed: %v", err)
 		return err
 	}
 
-	log.Println("✅ Database migrations completed")
+	log.Println(" Database migrations completed")
 	return nil
 }
 
