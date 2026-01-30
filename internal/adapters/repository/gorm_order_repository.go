@@ -15,22 +15,42 @@ func NewGormOrderRepository(db *gorm.DB) port.OrderRepository {
 }
 
 func (r *GormOrderRepository) CreateOrder(userID uint, total_amount float64, orderItems []domain.OrderItem) error {
-	order := domain.Order{
-		UserID:       userID,
-		OrderItems:   orderItems,
-		Total_amount: total_amount,
+    order := domain.Order{
+        UserID:       userID,
+        OrderItems:   orderItems,  // GORM จะสร้าง orderItems ให้เอง
+        Total_amount: total_amount,
+    }
+    
+    // สร้างทั้ง order และ orderItems ในครั้งเดียว
+    if err := r.db.Create(&order).Error; err != nil {
+        return err
+    }
+    
+    return nil
+}
+
+func (r *GormOrderRepository) GetOrderByUserID(userID uint) ([]*domain.Order, error) {
+	var order []*domain.Order
+	if err := r.db.Preload("OrderItems").Where("user_id = ?", userID).Find(&order); err.Error != nil {
+		return nil, err.Error
 	}
-	if err := r.db.Create(&order); err.Error != nil {
-		return err.Error
+	return order, nil
+}
+
+func (r *GormOrderRepository) DeleteOrderByOrderID(orderID string) error {
+	resultOrder := r.db.Where("id = ?", orderID).Delete(&domain.Order{})
+	if resultOrder.Error != nil {
+		return resultOrder.Error
 	}
 
-	for i := range orderItems {
-		orderItems[i].OrderID = order.ID
-		orderItems[i].ID = 0
-		if err := r.db.Create(&orderItems[i]); err.Error != nil {
-			return err.Error
-		}
+	resultOrderItems := r.db.Where("order_id = ?", orderID).Delete(&domain.OrderItem{})
+	if resultOrderItems.Error != nil {
+		return resultOrderItems.Error
 	}
 
+	if resultOrder.RowsAffected == 0 || resultOrderItems.RowsAffected == 0 {
+		return gorm.ErrRecordNotFound
+	}
+	
 	return nil
 }

@@ -33,11 +33,10 @@ func NewCartService(repo port.CartRepository, productRepo port.ProductRepository
 
 // CartItemResult represents the result of cart operations
 type CartItemResult struct {
-	ProductName  string
-	Quantity     int
-	UnitPrice    float64
-	TotalPrice   float64
-	Total_amount float64
+	ProductName string
+	Quantity    int
+	UnitPrice   float64
+	TotalPrice  float64
 }
 
 func (s *CartService) AddProductToCart(productID uint, userID uint) (*CartItemResult, error) {
@@ -253,18 +252,18 @@ func (s *CartService) Checkout(userID uint) ([]domain.OrderItem, error) {
 		if err != nil {
 			return nil, err
 		}
-		totalAmount += float64(item.Quantity) * product.Price
+		itemSubtotal := float64(item.Quantity) * product.Price
 		result := &domain.OrderItem{
 			ProductID:   product.ID, // bug ก่อนหน้านี้ไม่ใ่ส
 			ProductName: product.Name,
 			Quantity:    item.Quantity,
 			Price:       product.Price,
-			Subtotal:    totalAmount,
+			Subtotal:    itemSubtotal,
 		}
-		totalAmount += result.Subtotal
+		totalAmount += itemSubtotal
 		results = append(results, *result)
 	}
-	if err_order := s.orderRepo.CreateOrder(userID,totalAmount, results); err_order != nil {
+	if err_order := s.orderRepo.CreateOrder(userID, totalAmount, results); err_order != nil {
 		return nil, err_order
 	}
 

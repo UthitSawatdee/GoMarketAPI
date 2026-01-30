@@ -15,8 +15,7 @@ type Container struct {
     ProductHandler    *handlers.HttpProductHandler
     CategoriesHandler *handlers.HttpCategoryHandler
     CartHandler       *handlers.HttpCartHandler
-    // OrderHandler      *handlers.HttpOrderHandler
-    // HealthHandler     *handlers.HealthHandler
+    OrderHandler      *handlers.HttpOrderHandler
 }
 
 func NewContainer(db *gorm.DB) *Container {
@@ -33,7 +32,7 @@ func NewContainer(db *gorm.DB) *Container {
     productService := usecases.NewProductService(productRepo)
     categoriesService := usecases.NewCategoryService(categoriesRepo)
     cartService := usecases.NewCartService(cartRepo,productRepo,orderRepo)
-    // orderService := usecases.NewOrderService(orderRepo, cartRepo, productRepo)
+    orderService := usecases.NewOrderService(orderRepo)
 
     // Handlers
     return &Container{
@@ -41,7 +40,7 @@ func NewContainer(db *gorm.DB) *Container {
         ProductHandler:    handlers.NewHttpProductHandler(productService),
         CategoriesHandler: handlers.NewHttpCategoryHandler(categoriesService),
         CartHandler:       handlers.NewHttpCartHandler(cartService),
-        // OrderHandler:      adapters.NewHttpOrderHandler(orderService),
+        OrderHandler:      handlers.NewHttpOrderHandler(orderService),
         // HealthHandler:     adapters.NewHealthHandler(db),
     }
 }
