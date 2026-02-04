@@ -12,7 +12,7 @@ const docTemplate = `{
         "termsOfService": "http://swagger.io/terms/",
         "contact": {
             "name": "API Support",
-            "email": "support@ecommerce-api.com"
+            "email": "support@gomarketapi.com"
         },
         "license": {
             "name": "MIT",
@@ -1450,7 +1450,7 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "localhost:8000",
 	BasePath:         "/api/v1",
 	Schemes:          []string{"http", "https"},
-	Title:            "E-Commerce API",
+	Title:            "GoMarketAPI",
 	Description:      "Production-ready RESTful API for e-commerce platform built with Go and Clean Architecture.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,

@@ -1,9 +1,9 @@
 # ==============================================
-# E-Commerce API Makefile
+# GoMarketAPI Makefile
 # ==============================================
 
 # Variables
-APP_NAME := ecommerce-api
+APP_NAME := gomarketapi
 MAIN_PATH := ./cmd/api
 BINARY_PATH := ./bin/$(APP_NAME)
 COVERAGE_FILE := coverage.out

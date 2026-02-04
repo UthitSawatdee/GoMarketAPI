@@ -104,7 +104,7 @@ definitions:
 host: localhost:8000
 info:
   contact:
-    email: support@ecommerce-api.com
+    email: support@gomarketapi.com
     name: API Support
   description: Production-ready RESTful API for e-commerce platform built with Go
     and Clean Architecture.

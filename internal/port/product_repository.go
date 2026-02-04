@@ -1,7 +1,7 @@
 package port
 
 import (
-	domain "github.com/Fal2o/E-Commerce_API/internal/domain"
+	domain "github.com/UthitSawatdee/GoMarketAPI/internal/domain"
 )
 
 // กำหนด "สัญญา" ว่า adapter ต้องทำอะไรได้บ้าง

@@ -3,8 +3,8 @@ package usecase
 import (
 	"errors"
 
-	"github.com/Fal2o/E-Commerce_API/internal/domain"
-	port "github.com/Fal2o/E-Commerce_API/internal/port"
+	"github.com/UthitSawatdee/GoMarketAPI/internal/domain"
+	port "github.com/UthitSawatdee/GoMarketAPI/internal/port"
 	"gorm.io/gorm"
 )
 

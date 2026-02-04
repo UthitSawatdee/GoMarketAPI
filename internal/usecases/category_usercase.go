@@ -2,8 +2,8 @@ package usecase
 
 import (
 	"fmt"
-	domain "github.com/Fal2o/E-Commerce_API/internal/domain"
-	port "github.com/Fal2o/E-Commerce_API/internal/port"
+	domain "github.com/UthitSawatdee/GoMarketAPI/internal/domain"
+	port "github.com/UthitSawatdee/GoMarketAPI/internal/port"
 	"gorm.io/gorm"
 	"errors"
 )

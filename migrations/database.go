@@ -2,7 +2,7 @@ package migrations
 
 import (
 	"fmt"
-	domain "github.com/Fal2o/E-Commerce_API/internal/domain"
+	domain "github.com/UthitSawatdee/GoMarketAPI/internal/domain"
 	"log"
 	"os"
 	"time"

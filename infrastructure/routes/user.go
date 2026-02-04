@@ -1,10 +1,10 @@
 package routes
 
 import (
-    "github.com/Fal2o/E-Commerce_API/infrastructure/container"
+    "github.com/UthitSawatdee/GoMarketAPI/infrastructure/container"
     "github.com/gofiber/fiber/v2"
-    "github.com/Fal2o/E-Commerce_API/infrastructure/config"
-    "github.com/Fal2o/E-Commerce_API/internal/middleware"
+    "github.com/UthitSawatdee/GoMarketAPI/infrastructure/config"
+    "github.com/UthitSawatdee/GoMarketAPI/internal/middleware"
 
 
 )

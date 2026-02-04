@@ -1,5 +1,5 @@
 # ==============================================
-# Multi-stage Dockerfile for E-Commerce API
+# Multi-stage Dockerfile for GoMarketAPI
 # Optimized for small image size and security
 # ==============================================
 

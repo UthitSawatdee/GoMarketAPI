@@ -3,8 +3,8 @@ package handler
 import (
 	"fmt"
 
-	domain "github.com/Fal2o/E-Commerce_API/internal/domain"
-	usecases "github.com/Fal2o/E-Commerce_API/internal/usecases"
+	domain "github.com/UthitSawatdee/GoMarketAPI/internal/domain"
+	usecases "github.com/UthitSawatdee/GoMarketAPI/internal/usecases"
 	"github.com/gofiber/fiber/v2"
 )
 

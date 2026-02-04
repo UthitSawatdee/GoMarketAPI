@@ -1,7 +1,7 @@
 package routes
 
 import (
-	"github.com/Fal2o/E-Commerce_API/infrastructure/container"
+	"github.com/UthitSawatdee/GoMarketAPI/infrastructure/container"
 	"github.com/gofiber/fiber/v2"
 )
 

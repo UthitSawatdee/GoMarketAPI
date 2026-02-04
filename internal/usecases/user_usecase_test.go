@@ -4,8 +4,8 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/Fal2o/E-Commerce_API/internal/domain"
-	usecase "github.com/Fal2o/E-Commerce_API/internal/usecases"
+	"github.com/UthitSawatdee/GoMarketAPI/internal/domain"
+	usecase "github.com/UthitSawatdee/GoMarketAPI/internal/usecases"
 )
 
 // ==============================================

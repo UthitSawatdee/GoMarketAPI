@@ -1,7 +1,7 @@
 package server
 
 import (
-	"github.com/Fal2o/E-Commerce_API/infrastructure/config"
+	"github.com/UthitSawatdee/GoMarketAPI/infrastructure/config"
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/limiter"
 	"time"

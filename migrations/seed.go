@@ -1,10 +1,10 @@
 package migrations
 
 import (
-	domain "github.com/Fal2o/E-Commerce_API/internal/domain"
+	domain "github.com/UthitSawatdee/GoMarketAPI/internal/domain"
 	"gorm.io/gorm"
 	"log"
-	hash "github.com/Fal2o/E-Commerce_API/pkg/hash"
+	hash "github.com/UthitSawatdee/GoMarketAPI/pkg/hash"
 )
 
 // SeedData inserts initial data into database

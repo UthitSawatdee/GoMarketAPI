@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strconv"
 
-	usecases "github.com/Fal2o/E-Commerce_API/internal/usecases"
+	usecases "github.com/UthitSawatdee/GoMarketAPI/internal/usecases"
 	"github.com/gofiber/fiber/v2"
 )
 

@@ -8,22 +8,22 @@ import (
 	"syscall"
 	"time"
 
-	_ "github.com/Fal2o/E-Commerce_API/docs"
-	"github.com/Fal2o/E-Commerce_API/infrastructure/config"
-	"github.com/Fal2o/E-Commerce_API/infrastructure/container"
-	"github.com/Fal2o/E-Commerce_API/infrastructure/routes"
-	"github.com/Fal2o/E-Commerce_API/infrastructure/server"
-	database "github.com/Fal2o/E-Commerce_API/migrations" 
+	_ "github.com/UthitSawatdee/GoMarketAPI/docs"
+	"github.com/UthitSawatdee/GoMarketAPI/infrastructure/config"
+	"github.com/UthitSawatdee/GoMarketAPI/infrastructure/container"
+	"github.com/UthitSawatdee/GoMarketAPI/infrastructure/routes"
+	"github.com/UthitSawatdee/GoMarketAPI/infrastructure/server"
+	database "github.com/UthitSawatdee/GoMarketAPI/migrations"
 	"github.com/gofiber/swagger"
 )
 
-// @title E-Commerce API
+// @title GoMarketAPI
 // @version 1.0.0
 // @description Production-ready RESTful API for e-commerce platform built with Go and Clean Architecture.
 // @termsOfService http://swagger.io/terms/
 
 // @contact.name API Support
-// @contact.email support@ecommerce-api.com
+// @contact.email support@gomarketapi.com
 
 // @license.name MIT
 // @license.url https://opensource.org/licenses/MIT

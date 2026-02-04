@@ -1,6 +1,6 @@
 package port
 import (
-	domain "github.com/Fal2o/E-Commerce_API/internal/domain"
+	domain "github.com/UthitSawatdee/GoMarketAPI/internal/domain"
 )
 
 // CartRepository defines the interface for cart data operations

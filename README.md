@@ -1,4 +1,4 @@
-# 🛒 E-Commerce REST API
+# GoMarketAPI
 
 [![Go Version](https://img.shields.io/badge/Go-1.23+-00ADD8?style=flat&logo=go)](https://golang.org/)
 [![Architecture](https://img.shields.io/badge/Architecture-Clean%20Architecture-blue.svg)](https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html)
@@ -123,7 +123,7 @@ graph TB
 ## 📁 Project Structure
 
 ```
-E-Commerce_API/
+GoMarketAPI/
 ├── cmd/
 │   └── api/
 │       └── main.go              # Application entry point
@@ -163,8 +163,8 @@ E-Commerce_API/
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/Fal2o/E-Commerce_API.git
-cd E-Commerce_API
+git clone https://github.com/UthitSawatdee/GoMarketAPI.git
+cd GoMarketAPI
 
 # 2. Copy environment file
 cp .env.example .env
@@ -308,8 +308,8 @@ curl -X POST http://localhost:8000/api/v1/user/cart/item/1 \
 
 ```bash
 # Multi-stage build (see Dockerfile)
-docker build -t ecommerce-api:latest .
-docker run -p 8000:8000 --env-file .env ecommerce-api:latest
+docker build -t gomarketapi:latest .
+docker run -p 8000:8000 --env-file .env gomarketapi:latest
 ```
 
 ### Using Docker Compose
@@ -322,6 +322,6 @@ docker-compose up -d
 
 ## 👤 Author
 
-**Fal2o**
+**UthitSawatdee**
 
-- GitHub: [@Fal2o](https://github.com/Fal2o)
+- GitHub: [@UthitSawatdee](https://github.com/UthitSawatdee)

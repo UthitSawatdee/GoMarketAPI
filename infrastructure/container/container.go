@@ -2,10 +2,10 @@ package container
 
 import (
     "gorm.io/gorm"
-	handlers "github.com/Fal2o/E-Commerce_API/internal/adapters/handler"
-	adapters "github.com/Fal2o/E-Commerce_API/internal/adapters/repository"
-	hash "github.com/Fal2o/E-Commerce_API/pkg/hash"
-	usecases "github.com/Fal2o/E-Commerce_API/internal/usecases"
+	handlers "github.com/UthitSawatdee/GoMarketAPI/internal/adapters/handler"
+	adapters "github.com/UthitSawatdee/GoMarketAPI/internal/adapters/repository"
+	hash "github.com/UthitSawatdee/GoMarketAPI/pkg/hash"
+	usecases "github.com/UthitSawatdee/GoMarketAPI/internal/usecases"
 	
 )
 
