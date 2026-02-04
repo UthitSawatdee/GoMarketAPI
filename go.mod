@@ -1,4 +1,4 @@
-module github.com/Fal2o/E-Commerce_API
+module github.com/UthitSawatdee/GoMarketAPI
 
 go 1.25.5
 
