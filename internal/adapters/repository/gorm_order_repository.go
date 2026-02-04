@@ -85,3 +85,18 @@ func (r *GormOrderRepository) UpdateOrderStatus(orderID string, status string) (
 	}
 	return &order, nil
 }
+
+// GetOrderByID retrieves a single order with all nested relations
+func (r *GormOrderRepository) GetOrderByID(orderID string) (*domain.Order, error) {
+	var order domain.Order
+	err := r.db.
+		Preload("User").
+		Preload("OrderItems").
+		Preload("OrderItems.Product").
+		Where("id = ?", orderID).
+		First(&order).Error
+	if err != nil {
+		return nil, err
+	}
+	return &order, nil
+}

@@ -17,8 +17,8 @@ type ProductRepository interface {
 	GetProductByCategory(category string) ([]*domain.Product, error)
 	GetProductByName(Name string) ([]*domain.Product, error) //fiter product by name
 	GetProductByID(productID uint) (*domain.Product, error)
-	UpdateStock(productID uint, newStock int) error
-	// GetUser(id uint) (*domain.User, error)
+	UpdateStock(productID uint, quantity int) error
+	RestoreStock(productID uint, quantity int) error // Restore stock when order is cancelled
 	// ListUsers() ([]*domain.User, error)
 	// GetByEmail(email string) (*domain.User, error)
 

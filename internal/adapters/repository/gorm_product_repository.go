@@ -66,7 +66,7 @@ func (r *GormProductRepository) GetByName(name string) (*domain.Product, error) 
 
 func (r *GormProductRepository) GetAllProducts() ([]*domain.Product, error) {
 	var products []*domain.Product
-    err := r.db.Preload("Category").Find(&products).Error
+	err := r.db.Preload("Category").Find(&products).Error
 	if err != nil {
 		return nil, err
 	}
@@ -112,19 +112,37 @@ func (r *GormProductRepository) GetProductByID(productID uint) (*domain.Product,
 // UpdateStock updates product stock with optimistic locking
 // quantity: จำนวนที่จะลด (ค่าบวก = ลด, ค่าลบ = เพิ่ม)
 func (r *GormProductRepository) UpdateStock(productID uint, quantity int) error {
-    // ใช้ raw SQL เพื่อ atomic update และป้องกัน race condition
-    result := r.db.Model(&domain.Product{}).
-        Where("id = ? AND stock >= ?", productID, quantity).
-        Update("stock", gorm.Expr("stock - ?", quantity))
+	// ใช้ raw SQL เพื่อ atomic update และป้องกัน race condition
+	result := r.db.Model(&domain.Product{}).
+		Where("id = ? AND stock >= ?", productID, quantity).
+		Update("stock", gorm.Expr("stock - ?", quantity))
 
-    if result.Error != nil {
-        return fmt.Errorf("%w: %v", errors.New("database error"), result.Error)
-    }
+	if result.Error != nil {
+		return fmt.Errorf("%w: %v", errors.New("database error"), result.Error)
+	}
 
-    // ถ้า RowsAffected = 0 หมายความว่า stock ไม่พอ หรือ product ไม่มี
-    if result.RowsAffected == 0 {
-        return errors.New("insufficient stock")
-    }
+	// ถ้า RowsAffected = 0 หมายความว่า stock ไม่พอ หรือ product ไม่มี
+	if result.RowsAffected == 0 {
+		return errors.New("insufficient stock")
+	}
 
-    return nil
+	return nil
+}
+
+// RestoreStock increases product stock when order is cancelled
+// This is the inverse of UpdateStock
+func (r *GormProductRepository) RestoreStock(productID uint, quantity int) error {
+	result := r.db.Model(&domain.Product{}).
+		Where("id = ?", productID).
+		Update("stock", gorm.Expr("stock + ?", quantity))
+
+	if result.Error != nil {
+		return fmt.Errorf("failed to restore stock: %v", result.Error)
+	}
+
+	if result.RowsAffected == 0 {
+		return errors.New("product not found")
+	}
+
+	return nil
 }
