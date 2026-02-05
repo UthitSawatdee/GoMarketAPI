@@ -14,19 +14,18 @@ func NewGormOrderRepository(db *gorm.DB) port.OrderRepository {
 	return &GormOrderRepository{db: db}
 }
 
-func (r *GormOrderRepository) CreateOrder(userID uint, total_amount float64, orderItems []domain.OrderItem) error {
+func (r *GormOrderRepository) CreateOrder(userID uint, total_amount float64, orderItems []domain.OrderItem) (uint, error) {
 	order := domain.Order{
 		UserID:       userID,
-		OrderItems:   orderItems, // GORM จะสร้าง orderItems ให้เอง
+		OrderItems:   orderItems,
 		Total_amount: total_amount,
 	}
 
-	// สร้างทั้ง order และ orderItems ในครั้งเดียว
 	if err := r.db.Create(&order).Error; err != nil {
-		return err
+		return 0, err
 	}
 
-	return nil
+	return order.ID, nil
 }
 
 func (r *GormOrderRepository) GetOrderByUserID(userID uint) ([]*domain.Order, error) {

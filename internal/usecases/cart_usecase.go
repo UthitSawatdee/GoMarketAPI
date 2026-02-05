@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"errors"
+	"fmt"
 
 	"github.com/UthitSawatdee/GoMarketAPI/internal/domain"
 	port "github.com/UthitSawatdee/GoMarketAPI/internal/port"
@@ -14,7 +15,7 @@ type CartUseCase interface {
 	DeleteCartItem(cartID uint, productID uint) (*CartItemResult, error)
 	DeleteCart(userID uint) error
 	ViewCart(userID uint) ([]*CartItemResult, error)
-	Checkout(userID uint) ([]domain.OrderItem, error)
+	Checkout(userID uint) (*domain.Order, error)
 }
 
 type CartService struct {
@@ -231,7 +232,7 @@ func (s *CartService) ViewCart(userID uint) ([]*CartItemResult, error) {
 	return results, nil
 }
 
-func (s *CartService) Checkout(userID uint) ([]domain.OrderItem, error) {
+func (s *CartService) Checkout(userID uint) (*domain.Order, error) {
 	// 1: Get Cart
 	cart, err := s.repo.GetCartByUserID(userID)
 	if err != nil {
@@ -244,8 +245,12 @@ func (s *CartService) Checkout(userID uint) ([]domain.OrderItem, error) {
 		return nil, err
 	}
 
-	// 3: Build Results
-	var results []domain.OrderItem
+	if len(cartItems) == 0 {
+		return nil, errors.New("cart is empty")
+	}
+
+	// 3: Build OrderItems with Product data
+	var orderItems []domain.OrderItem
 	var totalAmount float64
 	for _, item := range cartItems {
 		product, err := s.productRepo.GetProductByID(item.ProductID)
@@ -253,25 +258,35 @@ func (s *CartService) Checkout(userID uint) ([]domain.OrderItem, error) {
 			return nil, err
 		}
 		itemSubtotal := float64(item.Quantity) * product.Price
-		result := &domain.OrderItem{
-			ProductID:   product.ID, // bug ก่อนหน้านี้ไม่ใ่ส
+		orderItem := domain.OrderItem{
+			ProductID:   product.ID,
 			ProductName: product.Name,
 			Quantity:    item.Quantity,
 			Price:       product.Price,
 			Subtotal:    itemSubtotal,
+			Product:     *product, // Include product data for response
 		}
 		totalAmount += itemSubtotal
-		results = append(results, *result)
-	}
-	if err_order := s.orderRepo.CreateOrder(userID, totalAmount, results); err_order != nil {
-		return nil, err_order
+		orderItems = append(orderItems, orderItem)
 	}
 
-	// 4: Clear Cart after checkout
+	// 4: Create Order and get the ID
+	orderID, err := s.orderRepo.CreateOrder(userID, totalAmount, orderItems)
+	if err != nil {
+		return nil, err
+	}
+
+	// 5: Clear Cart after successful order creation
 	err = s.repo.DeleteAllProductInCart(cart.ID)
 	if err != nil {
 		return nil, err
 	}
 
-	return results, nil
+	// 6: Fetch the created order with full preloading
+	createdOrder, err := s.orderRepo.GetOrderByID(fmt.Sprintf("%d", orderID))
+	if err != nil {
+		return nil, err
+	}
+
+	return createdOrder, nil
 }
